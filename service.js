@@ -10,7 +10,8 @@ function register (angular) {
       add: add,
       find: find,
       options: setOptions,
-      destroy: destroy
+      destroy: destroy,
+      handleModels: handleModels
     };
     function handleModels(scope, drake){
       var dragElm;
@@ -45,7 +46,7 @@ function register (angular) {
             targetModel.splice(dropIndex, 0, dropElmModel);
             target.removeChild(dropElm); // element must be removed for ngRepeat to apply correctly
           }
-          drake.emit('drop-model', dropElm, target, source);
+          drake.emit('drop-model', dropElm, target, source, dropElmModel, targetModel);
         });
       });
     }

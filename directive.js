@@ -27,6 +27,7 @@ function register (angular) {
             bag.drake.models.push(model);
           }else{
             bag.drake.models = [model];
+            dragulaService.handleModels(dragulaScope, bag.drake);
           }
         }
         return;
