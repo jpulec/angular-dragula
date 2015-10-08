@@ -17,7 +17,9 @@ function register (angular) {
       var dragElm;
       var dragIndex;
       var dropIndex;
+      var dropElmModel;
       var sourceModel;
+      var targetModel;
       drake.on('remove',function removeModel (el, source) {
         sourceModel = drake.models[drake.containers.indexOf(source)];
         scope.$applyAsync(function applyRemove() {
@@ -37,8 +39,8 @@ function register (angular) {
             sourceModel.splice(dropIndex, 0, sourceModel.splice(dragIndex, 1)[0]);
           } else {
             var notCopy = dragElm === dropElm;
-            var targetModel = drake.models[drake.containers.indexOf(target)];
-            var dropElmModel = notCopy ? sourceModel[dragIndex] : angular.copy(sourceModel[dragIndex]);
+            targetModel = drake.models[drake.containers.indexOf(target)];
+            dropElmModel = notCopy ? sourceModel[dragIndex] : angular.copy(sourceModel[dragIndex]);
 
             if (notCopy) {
               sourceModel.splice(dragIndex, 1);
