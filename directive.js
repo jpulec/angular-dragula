@@ -10,6 +10,7 @@ function register (angular) {
       scope: {
         dragulaScope: '=',
         dragulaModel: '=',
+        dragulaOptions: '=' // Only honored for the first instance of the directive per bag.
       },
       link: link
     };
@@ -32,9 +33,10 @@ function register (angular) {
         }
         return;
       }
-      var drake = dragula({
+      var options = angular.extend(scope.dragulaOptions, {
         containers: [container]
       });
+      var drake = dragula(options);
       if(model){
         drake.models = [model];
       }

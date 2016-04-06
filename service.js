@@ -52,9 +52,11 @@ function register (angular) {
               sourceModel.splice(dragIndex, 1);
             }
             targetModel.splice(dropIndex, 0, dropElmModel);
-            target.removeChild(dropElm); // element must be removed for ngRepeat to apply correctly
+            if (Array.prototype.indexOf.call(target.children, dropElm) !== -1) {
+                target.removeChild(dropElm); // element must be removed for ngRepeat to apply correctly
+            }
           }
-          drake.emit('drop-model', dropElm, target, source, dropElmModel, targetModel);
+          drake.emit('drop-model', dropElm, target, source, dropElmModel, targetModel, sourceModel);
         });
       });
     }
