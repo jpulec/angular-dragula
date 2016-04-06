@@ -10,6 +10,7 @@ function register (angular) {
       scope: {
         dragulaScope: '=',
         dragulaModel: '=',
+        dragulaOptions: '=' // Only honored for the first instance of the directive per bag.
       },
       link: link
     };
@@ -18,26 +19,38 @@ function register (angular) {
       var dragulaScope = scope.dragulaScope || scope.$parent;
       var container = elem[0];
       var name = scope.$eval(attrs.dragula);
-      var model = scope.dragulaModel;
+      var drake;
+
       var bag = dragulaService.find(dragulaScope, name);
       if (bag) {
-        bag.drake.containers.push(container);
-        if(model){
-          if(bag.drake.models){
-            bag.drake.models.push(model);
-          }else{
-            bag.drake.models = [model];
-          }
+        drake = bag.drake;
+        drake.containers.push(container);
+      } else {
+        var options = angular.extend(scope.dragulaOptions || {}, {
+          containers: [container]
+        });
+        drake = dragula(options);
+        dragulaService.add(dragulaScope, name, drake);
+      }
+
+      scope.$watch('dragulaModel', function (newValue, oldValue) {
+        if (!newValue) {
+          return;
         }
-        return;
-      }
-      var drake = dragula({
-        containers: [container]
+
+        if (drake.models) {
+          var modelIndex = oldValue ? drake.models.indexOf(oldValue) : -1;
+          if (modelIndex >= 0) {
+            drake.models.splice(modelIndex, 1, newValue);
+          } else {
+            drake.models.push(newValue);
+          }
+        } else {
+          drake.models = [newValue];
+        }
+
+        dragulaService.handleModels(dragulaScope, drake);
       });
-      if(model){
-        drake.models = [model];
-      }
-      dragulaService.add(dragulaScope, name, drake);
     }
   }];
 }

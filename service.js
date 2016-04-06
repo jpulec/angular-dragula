@@ -10,14 +10,23 @@ function register (angular) {
       add: add,
       find: find,
       options: setOptions,
-      destroy: destroy
+      destroy: destroy,
+      handleModels: handleModels
     };
     function handleModels(scope, drake){
+      if(drake.registered){ // do not register events twice
+        return;
+      }
       var dragElm;
       var dragIndex;
       var dropIndex;
+      var dropElmModel;
       var sourceModel;
+      var targetModel;
       drake.on('remove',function removeModel (el, source) {
+        if (!drake.models) {
+          return;
+        }
         sourceModel = drake.models[drake.containers.indexOf(source)];
         scope.$applyAsync(function applyRemove() {
           sourceModel.splice(dragIndex, 1);
@@ -29,6 +38,9 @@ function register (angular) {
         dragIndex = domIndexOf(el, source);
       });
       drake.on('drop',function dropModel (dropElm, target, source) {
+        if (!drake.models) {
+          return;
+        }
         dropIndex = domIndexOf(dropElm, target);
         scope.$applyAsync(function applyDrop() {
           sourceModel = drake.models[drake.containers.indexOf(source)];
@@ -36,18 +48,21 @@ function register (angular) {
             sourceModel.splice(dropIndex, 0, sourceModel.splice(dragIndex, 1)[0]);
           } else {
             var notCopy = dragElm === dropElm;
-            var targetModel = drake.models[drake.containers.indexOf(target)];
-            var dropElmModel = notCopy ? sourceModel[dragIndex] : angular.copy(sourceModel[dragIndex]);
+            targetModel = drake.models[drake.containers.indexOf(target)];
+            dropElmModel = notCopy ? sourceModel[dragIndex] : angular.copy(sourceModel[dragIndex]);
 
             if (notCopy) {
               sourceModel.splice(dragIndex, 1);
             }
             targetModel.splice(dropIndex, 0, dropElmModel);
-            target.removeChild(dropElm); // element must be removed for ngRepeat to apply correctly
+            if (Array.prototype.indexOf.call(target.children, dropElm) !== -1) {
+                target.removeChild(dropElm); // element must be removed for ngRepeat to apply correctly
+            }
           }
-          drake.emit('drop-model', dropElm, target, source);
+          drake.emit('drop-model', dropElm, target, source, dropElmModel, targetModel, sourceModel);
         });
       });
+      drake.registered = true;
     }
     function getOrCreateCtx (scope) {
       var ctx = scope[dragulaKey];
@@ -95,9 +110,7 @@ function register (angular) {
     }
     function setOptions (scope, name, options) {
       var bag = add(scope, name, dragula(options));
-      if(bag.drake.models){
-        handleModels(scope, bag.drake);
-      }
+      handleModels(scope, bag.drake);
     }
   }];
 }
