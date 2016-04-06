@@ -1,5 +1,22 @@
 > Whenever `dragula` itself is updated, a new minor will be published, but the changelog won't be modified
 
+# 1.2.2 Body of Lies
+
+- fixes #47
+
+# 1.2.1 The Postman Always Rings Twice
+
+- fixes #45
+
+# 1.2.0 Mr. Right
+
+- Starting to doing better releases
+- Fix issue with `drake.models` not being defined
+- Keep model in sync
+- Fix model watcher
+
+# 1.0.8 - 1.1.9 without description
+
 # 1.0.7 Bow Down
 
 - Renamed package on Bower as `angular-dragula`

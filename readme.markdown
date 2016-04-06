@@ -55,7 +55,7 @@ There's a `dragula` directive _[(as seen in the demo)][2]_ that allows you to gr
 
 ```html
 <ul ng-controller="ItemsController">
-  <li ng-repeat="item in items" dragula='"bag-one"' dragula-scope='$parent'></li>
+  <li ng-repeat="item in items" dragula='"bag-one"' dragula-scope="$parent"></li>
 </ul>
 ```
 
@@ -65,11 +65,11 @@ If your `ng-repeat` is compiled from array, you may wish to have it synced. For 
 
 ```html
 <ul ng-controller="ItemsController">
-  <li ng-repeat="item in items" dragula='"bag-one"' dragula-model='items'></li>
+  <li ng-repeat="item in items" dragula='"bag-one"' dragula-model="items"></li>
 </ul>
 ```
 
-The standard `drop` event is fired before the model is synced. For that purpose you need to use the `drop-model`. The same behavior exists in the `remove` event. Therefore is the `remove-model` event. Further details are available under `Events`
+The standard `drop` event is fired before the model is synced. For that purpose you need to use the `drop-model` event. The same behavior exists in the `remove` event. Therefore is the `remove-model` event. Further details are available under `Events`
 
 ### `drake` options
 
