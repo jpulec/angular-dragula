@@ -26,7 +26,7 @@ function register (angular) {
         drake = bag.drake;
         drake.containers.push(container);
       } else {
-        var options = angular.extend(scope.dragulaOptions, {
+        var options = angular.extend(scope.dragulaOptions || {}, {
           containers: [container]
         });
         drake = dragula(options);
