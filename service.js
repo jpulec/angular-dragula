@@ -46,6 +46,8 @@ function register (angular) {
           sourceModel = drake.models[drake.containers.indexOf(source)];
           if (target === source) {
             sourceModel.splice(dropIndex, 0, sourceModel.splice(dragIndex, 1)[0]);
+            targetModel = sourceModel;
+            dropElmModel = sourceModel[dragIndex];
           } else {
             var notCopy = dragElm === dropElm;
             targetModel = drake.models[drake.containers.indexOf(target)];

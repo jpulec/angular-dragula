@@ -19,38 +19,28 @@ function register (angular) {
       var dragulaScope = scope.dragulaScope || scope.$parent;
       var container = elem[0];
       var name = scope.$eval(attrs.dragula);
-      var drake;
-
+      var model = scope.dragulaModel;
       var bag = dragulaService.find(dragulaScope, name);
       if (bag) {
-        drake = bag.drake;
-        drake.containers.push(container);
-      } else {
-        var options = angular.extend(scope.dragulaOptions || {}, {
-          containers: [container]
-        });
-        drake = dragula(options);
-        dragulaService.add(dragulaScope, name, drake);
-      }
-
-      scope.$watch('dragulaModel', function (newValue, oldValue) {
-        if (!newValue) {
-          return;
-        }
-
-        if (drake.models) {
-          var modelIndex = oldValue ? drake.models.indexOf(oldValue) : -1;
-          if (modelIndex >= 0) {
-            drake.models.splice(modelIndex, 1, newValue);
-          } else {
-            drake.models.push(newValue);
+          bag.drake.containers.push(container);
+          if (model) {
+              if (bag.drake.models) {
+                  bag.drake.models.push(model);
+              } else {
+                  bag.drake.models = [model];
+                  dragulaService.handleModels(dragulaScope, bag.drake);
+              }
           }
-        } else {
-          drake.models = [newValue];
-        }
-
-        dragulaService.handleModels(dragulaScope, drake);
+          return;
+      }
+      var options = angular.extend(scope.dragulaOptions || {}, {
+          containers: [container]
       });
+      var drake = dragula(options);
+      if (model) {
+          drake.models = [model];
+      }
+      dragulaService.add(dragulaScope, name, drake);
     }
   }];
 }
