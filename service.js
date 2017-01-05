@@ -1,11 +1,11 @@
 'use strict';
 
 var dragula = require('dragula');
-var dragulaKey = '$$dragula';
 var replicateEvents = require('./replicate-events');
 
 function register (angular) {
   return [function dragulaService () {
+    var bags = [];
     return {
       add: add,
       find: find,
@@ -66,37 +66,26 @@ function register (angular) {
       });
       drake.registered = true;
     }
-    function getOrCreateCtx (scope) {
-      var ctx = scope[dragulaKey];
-      if (!ctx) {
-        ctx = scope[dragulaKey] = {
-          bags: []
-        };
-      }
-      return ctx;
-    }
     function domIndexOf(child, parent) {
       return Array.prototype.indexOf.call(angular.element(parent).children(), child);
     }
     function add (scope, name, drake) {
-      var bag = find(scope, name);
+      var bag = find(name);
       if (bag) {
         throw new Error('Bag named: "' + name + '" already exists in same angular scope.');
       }
-      var ctx = getOrCreateCtx(scope);
       bag = {
         name: name,
         drake: drake
       };
-      ctx.bags.push(bag);
+      bags.push(bag);
       replicateEvents(angular, bag, scope);
       if(drake.models){ // models to sync with (must have same structure as containers)
         handleModels(scope, drake);
       }
       return bag;
     }
-    function find (scope, name) {
-      var bags = getOrCreateCtx(scope).bags;
+    function find (name) {
       for (var i = 0; i < bags.length; i++) {
         if (bags[i].name === name) {
           return bags[i];
@@ -104,8 +93,7 @@ function register (angular) {
       }
     }
     function destroy (scope, name) {
-      var bags = getOrCreateCtx(scope).bags;
-      var bag = find(scope, name);
+      var bag = find(name);
       var i = bags.indexOf(bag);
       bags.splice(i, 1);
       bag.drake.destroy();
