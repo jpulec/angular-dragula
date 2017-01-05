@@ -20,7 +20,9 @@ function register (angular) {
       var dragElm;
       var dragIndex;
       var dropIndex;
+      var dropElmModel;
       var sourceModel;
+      var targetModel;
       drake.on('remove',function removeModel (el, source) {
         if (!drake.models) {
           return;
@@ -44,18 +46,22 @@ function register (angular) {
           sourceModel = drake.models[drake.containers.indexOf(source)];
           if (target === source) {
             sourceModel.splice(dropIndex, 0, sourceModel.splice(dragIndex, 1)[0]);
+            targetModel = sourceModel;
+            dropElmModel = sourceModel[dragIndex];
           } else {
             var notCopy = dragElm === dropElm;
-            var targetModel = drake.models[drake.containers.indexOf(target)];
-            var dropElmModel = notCopy ? sourceModel[dragIndex] : angular.copy(sourceModel[dragIndex]);
+            targetModel = drake.models[drake.containers.indexOf(target)];
+            dropElmModel = notCopy ? sourceModel[dragIndex] : angular.copy(sourceModel[dragIndex]);
 
             if (notCopy) {
               sourceModel.splice(dragIndex, 1);
             }
             targetModel.splice(dropIndex, 0, dropElmModel);
-            target.removeChild(dropElm); // element must be removed for ngRepeat to apply correctly
+            if (Array.prototype.indexOf.call(target.children, dropElm) !== -1) {
+                target.removeChild(dropElm); // element must be removed for ngRepeat to apply correctly
+            }
           }
-          drake.emit('drop-model', dropElm, target, source);
+          drake.emit('drop-model', dropElm, target, source, dropElmModel, targetModel, sourceModel);
         });
       });
       drake.registered = true;
