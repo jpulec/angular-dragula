@@ -71,13 +71,12 @@ function register (angular) {
     }
     function add (scope, name, drake) {
       var bag = find(name);
-      if (bag) {
-        throw new Error('Bag named: "' + name + '" already exists in same angular scope.');
+      if (!bag) {
+        bag = {
+          name: name,
+          drake: drake
+        };
       }
-      bag = {
-        name: name,
-        drake: drake
-      };
       bags.push(bag);
       replicateEvents(angular, bag, scope);
       if(drake.models){ // models to sync with (must have same structure as containers)
