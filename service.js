@@ -78,7 +78,7 @@ function register (angular) {
         };
       }
       bags.push(bag);
-      replicateEvents(angular, bag, scope);
+      replicateEvents(angular, bag);
       if(drake.models){ // models to sync with (must have same structure as containers)
         handleModels(scope, drake);
       }

@@ -15,7 +15,7 @@ var events = [
   'remove-model'
 ];
 
-function replicateEvents (angular, bag, scope) {
+function replicateEvents (angular, bag) {
   events.forEach(replicator);
 
   function replicator (type) {
@@ -24,6 +24,7 @@ function replicateEvents (angular, bag, scope) {
     function replicate () {
       var args = atoa(arguments).map(angularize);
       args.unshift(bag.name + '.' + type);
+      var scope = args[1].scope();
       scope.$emit.apply(scope, args);
     }
   }
