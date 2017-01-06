@@ -20,7 +20,7 @@ function register (angular) {
       var container = elem[0];
       var name = scope.$eval(attrs.dragula);
       var model = scope.dragulaModel;
-      var bag = dragulaService.find(dragulaScope, name);
+      var bag = dragulaService.find(name);
       if (bag) {
           bag.drake.containers.push(container);
           if (model) {
