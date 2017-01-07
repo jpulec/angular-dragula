@@ -24,8 +24,10 @@ function replicateEvents (angular, bag) {
     function replicate () {
       var args = atoa(arguments).map(angularize);
       args.unshift(bag.name + '.' + type);
-      var scope = args[2].scope();
-      scope.$emit.apply(scope, args);
+      if (args.length >= 3) {
+        var scope = args[2].scope();
+        scope.$emit.apply(scope, args);
+      }
     }
   }
 
